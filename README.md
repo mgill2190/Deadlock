@@ -11,6 +11,10 @@ https://docs.docker.com/docker-for-mac/install/
 ## Setup
 
 ```
+git clone https://github.com/djandyr/Deadlock.git
+```
+
+```
 docker-compose up -d --build
 ```
 
