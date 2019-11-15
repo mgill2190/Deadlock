@@ -22,7 +22,9 @@ services:
         # but if a service is unused, it's removed anyway
         exclude: '../../src/AppBundle/{Entity,Repository,Tests}'
 
-    # add more services, or override services that need manual wiring
-    # AppBundle\Service\ExampleService:
-    #     arguments:
-    #         $someArgument: 'some_value'
+    deadlock.util.ingot_entity_manager:
+        class: 'AppBundle\Util\IngotEntityManager'
+        public: true
+        arguments:
+            - '@doctrine.orm.entity_manager'
+            - '@doctrine'

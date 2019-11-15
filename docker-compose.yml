@@ -9,5 +9,5 @@ services:
         expose:
             - 3306
         environment:
-            MYSQL_ROOT_PASSWORD: pass
+            MYSQL_ROOT_PASSWORD: local
             MYSQL_DATABASE: deadlock

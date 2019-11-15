@@ -28,7 +28,8 @@ class DeadlockCommand extends ContainerAwareCommand
     private function initializeDependencies()
     {
         $container = $this->getContainer();
-        $this->entityManager = $container->get('doctrine.orm.default_entity_manager');
+        //$this->entityManager = $container->get('doctrine.orm.default_entity_manager');
+        $this->entityManager = $container->get('deadlock.util.ingot_entity_manager');
         $this->transportRepository = $this->entityManager->getRepository('AppBundle:Transport');
     }
 
@@ -42,8 +43,10 @@ class DeadlockCommand extends ContainerAwareCommand
         $entityManager = $this->entityManager;
 
         if ($input->getArgument('process') === '1') {
-            $this->entityManager->transactional(
+            //use connection->transaction as it doesnt close the em on error.
+            $this->entityManager->getConnection()->transactional(
                 function () use ($entityManager, $transport1, $transport2, $output) {
+                    $this->entityManager->getConnection()->setAutoCommit(false);
                     $transport1->setTransportDate(new \DateTime());
                     $output->writeln('CAXU7420415 locked');
                     $entityManager->persist($transport1);
@@ -57,7 +60,8 @@ class DeadlockCommand extends ContainerAwareCommand
                 }
             );
         } else {
-            $this->entityManager->transactional(
+            //use connection->transaction as it doesnt close the em on error.
+            $this->entityManager->getConnection()->transactional(
                 function () use ($entityManager, $transport1, $transport2, $output) {
                     $transport2->setTransportDate(new \DateTime());
                     $output->writeln('CAXU7420415 locked');
